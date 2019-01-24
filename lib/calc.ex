@@ -18,7 +18,7 @@ defmodule Calc do
         Enum.each(li, fn(x) ->
             #pos=elem(x,0)
             pos = Enum.find_index(li, fn(y)-> y == x end)
-            IO.puts pos+1
+            #IO.puts pos+1
             nibList=[]
             x1 = if(pos-1>=0) do
                 Enum.at(li, pos-1)
@@ -32,7 +32,8 @@ defmodule Calc do
             end
             nibList = [x1, x2]
             nibList = nibList -- [nil]
-            IO.inspect nibList
+            #IO.inspect nibList
+            Package1.adjNodeLi(x, nibList)
         end)
     end
 
@@ -41,28 +42,26 @@ defmodule Calc do
         Enum.each(li, fn(x) ->
             #pos=elem(x,0)
             pos = Enum.find_index(li, fn(y)-> y == x end)
-            IO.puts pos+1
+            #IO.puts pos+1
             nibList=[]
             x1 = if(pos-1>=0) do
                 Enum.at(li, pos-1)
-                #nibList = nibList ++ [l1]
-                #nibList = nibList ++ Enum.fetch!(li,pos-2)
             end
             x2 = if(pos+1<len) do
                 Enum.at(li, pos+1)
-                #nibList = nibList ++ [l2]
-                #nibList = nibList ++ Enum.fetch!(li,pos)
             end
             a=li -- [x,x1,x2]
-            IO.puts length(a)
+            #IO.puts length(a)
             if length(a)!=0 do
                 nibList = [x1, x2]++[Enum.random(a)]
                 nibList = nibList -- [nil]
-                IO.inspect nibList
+                #IO.inspect nibList
+                Package1.adjNodeLi(x, nibList)
             else
                 nibList = [x1,x2]
                 nibList = nibList -- [nil]
-                IO.inspect nibList
+                #IO.inspect nibList
+                Package1.adjNodeLi(x, nibList)
             end
         end)
     end
@@ -70,7 +69,8 @@ defmodule Calc do
     def adjFull(li) do
         Enum.each(li, fn(x) ->
             adjLi=li--[x]
-            IO.inspect adjLi
+            #IO.inspect adjLi
+            Package1.adjNodeLi(x, adjLi)
         end)
     end
 
@@ -88,20 +88,20 @@ defmodule Calc do
             p3 = corrList(ro+1,cl,num)
             p4 = corrList(ro,cl-1,num)
             pLi=Enum.uniq([p1,p2,p3,p4])--[-1]
-            IO.inspect pLi
+            #IO.inspect pLi
             adjLi = Enum.map(pLi, fn(x) ->
-                if x!=-1 do
-                    Enum.at(li,x)
-                end
-            end)
-            IO.inspect adjLi
+                        Enum.at(li,x)
+                    end)
+            #IO.inspect adjLi
             a=li -- adjLi
             a=a -- [x]
             if length(a)!=0 do
                 adjLi = adjLi++[Enum.random(a)]
-                IO.inspect adjLi
+                #IO.inspect adjLi
+                Package1.adjNodeLi(x, adjLi)
             else
-                IO.inspect adjLi
+                #IO.inspect adjLi
+                Package1.adjNodeLi(x, adjLi)
             end
         end)
     end
@@ -132,21 +132,11 @@ defmodule Calc do
             p7 = corrList(ro+(num-1),cl,num)
             p8 = corrList(ro,cl-(num-1),num)
             pLi=Enum.uniq([p1,p2,p3,p4,p5,p6,p7,p8])--[-1]
-            IO.inspect pLi
-            # adjLi = Enum.map(pLi, fn(x) ->
-            #     if x!=-1 do
-            #         Enum.at(li,x)
-            #     end
-            # end)
-            # IO.inspect adjLi
-            # a=li -- adjLi
-            # a=a -- [x]
-            # if length(a)!=0 do
-            #     adjLi = adjLi++[Enum.random(a)]
-            #     IO.inspect adjLi
-            # else
-            #     IO.inspect adjLi
-            # end
+            #IO.inspect pLi
+            adjLi = Enum.map(pLi, fn(x) ->
+                        Enum.at(li,x)
+                    end)
+            Package1.adjNodeLi(x, adjLi)
         end)
     end
 
@@ -157,7 +147,7 @@ defmodule Calc do
             -1
         end
     end
-    
+
     def topo3DGrid(li) do
         Enum.each(li, fn(x) ->
             #adjLi = []
@@ -166,7 +156,7 @@ defmodule Calc do
             pos = Enum.find_index(li, fn(y)-> y == x end)+1
             #IO.puts pos
             ro = round(:math.ceil(pos/num))
-            cl = if rem(pos,num)!=0, do: rem(pos,num), else: 3
+            cl = if rem(pos,num)!=0, do: rem(pos,num), else: num
             plain=round(:math.ceil(ro/num))
             #IO.puts plain
             p1 = corrList3d(ro-1,cl,num,plain)
@@ -177,20 +167,10 @@ defmodule Calc do
             p6 = if pos+num*num<=length(li), do: pos+num*num, else: -1
             pLi=Enum.uniq([p1,p2,p3,p4,p5,p6])--[-1]
             IO.inspect pLi
-            # adjLi = Enum.map(pLi, fn(x) ->
-            #     if x!=-1 do
-            #         Enum.at(li,x)
-            #     end
-            # end)
-            # IO.inspect adjLi
-            # a=li -- adjLi
-            # a=a -- [x]
-            # if length(a)!=0 do
-            #     adjLi = adjLi++[Enum.random(a)]
-            #     IO.inspect adjLi
-            # else
-            #     IO.inspect adjLi
-            # end
-        end)        
+            adjLi = Enum.map(pLi, fn(x) ->
+                        Enum.at(li,x)
+                    end)
+            Package1.adjNodeLi(x, adjLi)
+        end)
     end
 end

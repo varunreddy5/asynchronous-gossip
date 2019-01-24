@@ -1,7 +1,6 @@
 defmodule Gossip do
 
-  def gossip(a, b) do
-    IO.puts b
+  def gossip(a, b, c) do
     num = case b do
             "Line" -> a
             "Full" -> a
@@ -11,28 +10,50 @@ defmodule Gossip do
             "3DGrid" -> a = nearCubeRoot(a)
     end
     li=Enum.map(1..num, fn(x) ->
-      pid= Package1.start_link 
-    elem(pid, 1) end)
-    #{x, elem(pid, 1)} end)
-    IO.inspect li
-    # :timer.sleep(1000)
-    # Enum.each(li, fn x ->
-    #   IO.puts Process.alive?(elem(x, 1)) end)
+      {:ok, pid}= Package1.start_link
+      Package1.processIndex(pid, x)
+      pid
+      end)
+
+    table = :ets.new(:table, [:named_table, :public])
+    :ets.insert(table, {"nodeCount", 1})
+
     case b do
+      "Line" -> Calc.lineTopo(li)
+      "Full" -> Calc.adjFull(li)
+      "ImpLine" -> Calc.imfLineTopo(li)
+      "Torus" -> Calc.torusList(li)
+      "2DGrid" -> Calc.ram2DGrid(li)
       "3DGrid" -> Calc.topo3DGrid(li)
     end
+    time = System.monotonic_time(:millisecond)
+    randNode = Enum.random(li)
+
+    case c do
+        "Gossip" ->
+          Algo.gossipAlgo(li, randNode, time)
+        "PushSum" ->
+          Algo.pushSumAlgo(li, randNode, time)
+          liveFun(1)
+    end
+
   end
 
   def main(args\\[]) do
     {i,""}=Integer.parse(Enum.at(args,0))
     j=Enum.at(args,1)
+    k=Enum.at(args,2)
     #pid=spawn(Dosproj, :pmap, [i, j])
-    gossip(i, j)
+    gossip(i, j, k)
   end
 
   def nearThree(a) do
     i=rem(a,3)
     a+3-i
+  end
+
+  def liveFun(1) do
+    liveFun(1)
   end
 
   def nearPerfSquar(a) do
